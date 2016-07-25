@@ -1,0 +1,75 @@
+-define(IPROTO_CODE, 16#00).
+-define(IPROTO_SYNC, 16#01).
+%%  replication keys (header)
+-define(IPROTO_SERVER_ID, 16#02).
+-define(IPROTO_LSN, 16#03).
+-define(IPROTO_TIMESTAMP, 16#04).
+-define(IPROTO_SCHEMA_ID, 16#05).
+%% 
+-define(IPROTO_SPACE_ID, 16#10).
+-define(IPROTO_INDEX_ID, 16#11).
+-define(IPROTO_LIMIT, 16#12).
+-define(IPROTO_OFFSET, 16#13).
+-define(IPROTO_ITERATOR, 16#14).
+-define(IPROTO_INDEX_BASE, 16#15).
+%% 
+-define(IPROTO_KEY, 16#20).
+-define(IPROTO_TUPLE, 16#21).
+-define(IPROTO_FUNCTION_NAME, 16#22).
+-define(IPROTO_USER_NAME, 16#23).
+%% 
+-define(IPROTO_SERVER_UUID, 16#24).
+-define(IPROTO_CLUSTER_UUID, 16#25).
+-define(IPROTO_VCLOCK, 16#26).
+-define(IPROTO_EXPR, 16#27).
+-define(IPROTO_OPS, 16#28).
+%% 
+-define(IPROTO_DATA, 16#30).
+-define(IPROTO_ERROR, 16#31).
+
+-define(IPROTO_GREETING_SIZE, 128).
+-define(IPROTO_BODY_MAX_LEN, 2147483648).
+
+-define(REQUEST_TYPE_OK, 0).
+-define(REQUEST_TYPE_SELECT, 1).
+-define(REQUEST_TYPE_INSERT, 2).
+-define(REQUEST_TYPE_REPLACE, 3).
+-define(REQUEST_TYPE_UPDATE, 4).
+-define(REQUEST_TYPE_DELETE, 5).
+-define(REQUEST_TYPE_CALL, 6).
+-define(REQUEST_TYPE_AUTHENTICATE, 7).
+-define(REQUEST_TYPE_EVAL, 8).
+-define(REQUEST_TYPE_UPSERT, 9).
+-define(REQUEST_TYPE_PING, 64).
+-define(REQUEST_TYPE_JOIN, 65).
+-define(REQUEST_TYPE_SUBSCRIBE, 66).
+-define(REQUEST_TYPE_ERROR, (1 bsl 15)).
+
+-define(SPACE_SCHEMA, 272).
+-define(SPACE_SPACE, 280).
+-define(SPACE_INDEX, 288).
+-define(SPACE_FUNC, 296).
+-define(SPACE_VSPACE, 281).
+-define(SPACE_VINDEX, 289).
+-define(SPACE_VFUNC, 297).
+-define(SPACE_USER, 304).
+-define(SPACE_PRIV, 312).
+-define(SPACE_CLUSTER, 320).
+
+-define(INDEX_SPACE_PRIMARY, 0).
+-define(INDEX_SPACE_NAME, 2).
+-define(INDEX_INDEX_PRIMARY, 0).
+-define(INDEX_INDEX_NAME, 2).
+
+-define(ITERATOR_EQ, 0).
+-define(ITERATOR_REQ, 1).
+-define(ITERATOR_ALL, 2).
+-define(ITERATOR_LT, 3).
+-define(ITERATOR_LE, 4).
+-define(ITERATOR_GE, 5).
+-define(ITERATOR_GT, 6).
+-define(ITERATOR_BITSET_ALL_SET, 7).
+-define(ITERATOR_BITSET_ANY_SET, 8).
+-define(ITERATOR_BITSET_ALL_NOT_SET, 9).
+-define(ITERATOR_OVERLAPS, 10).
+-define(ITERATOR_NEIGHBOR, 11).

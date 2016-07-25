@@ -1,0 +1,19 @@
+{application, tara,
+	[{description, "Erlang Tarantool connector"},
+		{vsn, "0.8.0"},
+		{registered, []},
+		{mod, {tara_app, []}},
+		{applications,
+			[kernel,
+				stdlib,
+				crypto,
+				simplepool,
+				msgpack
+			]},
+		{env, []},
+		{modules, []},
+
+		{maintainers, []},
+		{licenses, []},
+		{links, []}
+	]}.

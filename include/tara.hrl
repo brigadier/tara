@@ -1,0 +1,11 @@
+-record(tara_error, {code, schema, message}).
+-record(tara_response, {code, schema, data}).
+
+-define(OP_ADD(FieldNo, Arg), 		[<<"+">>, FieldNo, Arg]).
+-define(OP_SUB(FieldNo, Arg), 		[<<"-">>, FieldNo, Arg]).
+-define(OP_BAND(FieldNo, Arg), 		[<<"&">>, FieldNo, Arg]).
+-define(OP_BXOR(FieldNo, Arg), 		[<<"^">>, FieldNo, Arg]).
+-define(OP_DEL(FieldNo, Arg), 		[<<"#">>, FieldNo, Arg]).
+-define(OP_INS(FieldNo, Arg),		[<<"!">>, FieldNo, Arg]).
+-define(OP_ASSIGN(FieldNo, Arg), 	[<<"=">>, FieldNo, Arg]).
+-define(OP_SPLICE(FieldNo, Pos, Offs, Arg), 	[<<":">>, FieldNo, Pos, Offs, Arg]).
