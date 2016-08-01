@@ -10,16 +10,18 @@ Tested with Tarantool 1.7 branch, Erlang 19.0
 * Multiple pools, each with its' own connection options.
 * Start/stop pools dynamically or from the application `env`.
 * Authentification.
-* Autoreconnect with deamplification on connection loss or other problems.
-* Both async and sync mode. The Sync mode is actually "sync" from the caller's point of view only, as
-it locks the caller process only. The worker process is not locked as `gen_server:call`
-returns `{noreply, Response}`. The case when you do a slow request from one process and then a fast one
-from another, and both requests are sent to the same process of the pool, will be handled correctly - the
-fast one will not wait for the slow one. But 5 seconds timeout of gen_server still exists, so think about
-async requests for potentially slow operations.
+* Autoreconnect with deamplification on connection loss or other problems. 
+* Both async and sync mode. The sync mode locks the caller process with `gen_server:call`. Worker
+waits until writing to socket is completed, then tries to read some data from socket with `0` timeout and
+returns `{noreply, State}`. The worker does not wait for response for the current request, so slow
+operation won't block the worker, but only the caller. The case when you do a slow request
+from one process and then a fast one from another, and both requests are sent to the same worker of the pool,
+will be handled correctly - the fast one will not wait for the slow one. But 5 seconds timeout of gen_server
+still exists, so think about async requests for potentially slow operations. 
 * Can use unix domain sockets, if tarantool configured to listen on such socket. Use 
 `{local, "/tmp/sock"}` as addr and `0` as port.
-* select, delete, insert, call, update, upsert, replace operations.
+* select, delete, insert, call, update, upsert, replace, eval operations.
+
 
 
 
@@ -34,7 +36,7 @@ Build
     $ rebar3 compile
     
     
-If you don't have rebar3 in your path, download it from this site http://www.rebar3.org/ or build from sources.  
+If you don't have rebar3 in your path, download it from http://www.rebar3.org/ or build it from sources.  
     
     
 Tests
@@ -45,19 +47,25 @@ tarantool and the name of your terminal app. Then run
     $ rebar3 ct    
 
 
+Load test such as "insert 999000 records " are disabled (commented off in the test module).
+
 
 Examples
 -----
 * Include tara/include/tara.hrl - you may need the records and macroses from this file
 * In the Sync mode operations return either `{error, Error}`, `#tara_response{}` or `#tara_error{}`.
- - `{error, Error}` gets returned when the server is disconnected or authentication is not yet completed
+ - `{error, Error}` gets returned when the server is disconnected or authentication is not yet completed. Also,
+if you sent request succesfully but socket disconnected before the worker get response for this
+request, you will get the `{error, disconnect_before_response}` response.
  - `#tara_response{}` - successful response with some data. Always contains `[{?IPROTO_DATA, Data}]` in the
 `data` field, where `Data` - list of 0 or more lists (named 'tuples' in tarantool terms,
 in docs and everywhere) of the result.
  - `#tara_error{}` - tarantool error. Something went wrong - invalid parameters in request, attempt to
 insert the tuple which is already exists and anything like that. The error message in the `message` field.
 * The `select` operation accepts optional `Options` parameter, with `limit`, `index`, `offset`, `iterator` 
-integer fields. The `Options` can be either map or proplist.
+integer fields. The `Options` can be either map or proplist. By default `limit` is equal to `16#FFFF` so
+specify some smaller value if your table potentially can have many records matching the query, and use
+pagination.
 
 
 Async operations have 2 additional parameters: Pid of the process which will get the
