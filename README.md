@@ -11,7 +11,7 @@ Tested with Tarantool 1.7 branch, Erlang 19.0
 * Start/stop pools dynamically or from the application `env`.
 * Authentification.
 * Autoreconnect with deamplification on connection loss or other problems. 
-* Both async and sync mode. The sync mode locks the caller process with `gen_server:call`. Worker
+* Both async and sync mode. The sync mode locks the caller process with `gen_server:call`. Worker in `handle_call`
 waits until writing to socket is completed, then tries to read some data from socket with `0` timeout and
 returns `{noreply, State}`. The worker does not wait for response for the current request, so slow
 operation won't block the worker, but only the caller. The case when you do a slow request
