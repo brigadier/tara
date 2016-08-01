@@ -108,8 +108,7 @@ handle_call({request, RequestType, Body}, From, #state{sock = Socket} = State) -
 			inet:setopts(Socket, [{active, true}]),
 			{noreply, State2};
 		{error, Reason} ->
-			next_reconnect(State, {transaction, Reason}),
-			{reply, {error, Reason}, State2}
+			{reply, {error, Reason}, next_reconnect(State, {transaction, Reason})}
 	end;
 
 
