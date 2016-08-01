@@ -72,8 +72,18 @@ request_select(SpaceID, Key, Params) ->
 	true = is_integer(Limit),
 	true = is_integer(Offset),
 	true = is_integer(Iterator),
+	msgpack:pack(
+		[
+			{?IPROTO_SPACE_ID, SpaceID},
+			{?IPROTO_INDEX_ID, Index},
+			{?IPROTO_LIMIT, Limit},
+			{?IPROTO_OFFSET, Offset},
+			{?IPROTO_ITERATOR, Iterator},
+			{?IPROTO_KEY, Key}
+		],
+		?MPACKOPTS
+	).
 
-	do_request_select(SpaceID, Key, Index, Limit, Offset, Iterator).
 
 request_insert_replace(SpaceID, Tuple) ->
 	msgpack:pack(
@@ -136,19 +146,6 @@ request_upsert(SpaceID, Tuple, Ops) ->
 %%====================================================================
 %% Internal functions
 %%====================================================================
-
-do_request_select(SpaceID, Key, Index, Limit, Offset, Iterator) when is_list(Key) ->
-	msgpack:pack(
-		[
-			{?IPROTO_SPACE_ID, SpaceID},
-			{?IPROTO_INDEX_ID, Index},
-			{?IPROTO_LIMIT, Limit},
-			{?IPROTO_OFFSET, Offset},
-			{?IPROTO_ITERATOR, Iterator},
-			{?IPROTO_KEY, Key}
-		],
-		?MPACKOPTS
-	).
 
 
 scramble(Salt, Hash1, Hash2) ->
