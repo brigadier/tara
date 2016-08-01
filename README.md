@@ -66,7 +66,7 @@ insert the tuple which is already exists and anything like that. The error messa
 integer fields. The `Options` can be either map or proplist. By default `limit` is equal to `16#FFFF` so
 specify some smaller value if your table potentially can have many records matching the query, and use
 pagination.
-
+* Response data can be different for the `vinyl` backend.
 
 Async operations have 2 additional parameters: Pid of the process which will get the
 result (or `undefined` if no process would listen for the response) and a Tag - any term, to be able to match
