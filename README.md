@@ -55,7 +55,7 @@ Examples
 * Include tara/include/tara.hrl - you may need the records and macroses from this file
 * In the Sync mode operations return either `{error, Error}`, `#tara_response{}` or `#tara_error{}`.
  - `{error, Error}` gets returned when the server is disconnected or authentication is not yet completed. Also,
-if you sent request succesfully but socket disconnected before the worker get response for this
+if you sent request succesfully but socket disconnected before the worker got response for this
 request, you will get the `{error, disconnect_before_response}` response.
  - `#tara_response{}` - successful response with some data. Always contains `[{?IPROTO_DATA, Data}]` in the
 `data` field, where `Data` - list of 0 or more lists (named 'tuples' in tarantool terms,
