@@ -1,6 +1,6 @@
 {application, tara,
 	[{description, "Erlang Tarantool connector"},
-		{vsn, "0.8.0"},
+		{vsn, "0.8.1"},
 		{registered, []},
 		{mod, {tara_app, []}},
 		{applications,
