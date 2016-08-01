@@ -133,7 +133,7 @@ handle_cast({request, RequestType, Body, ReplyTo, Tag}, #state{sock = Socket} = 
 					 inet:setopts(Socket, [{active, true}]),
 					 State2;
 				 {error, Reason} ->
-					 reply({async, ReplyTo, Tag}, {error, not_connected}),
+					 reply({async, ReplyTo, Tag}, {error, Reason}),
 					 next_reconnect(State, {transaction, Reason})
 			 end,
 	{noreply, State3};
