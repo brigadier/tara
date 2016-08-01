@@ -402,8 +402,8 @@ waitconnect(Pool) ->
 waitconnect(Pool, N) when N > 0 ->
 	Answer = tara:state(pool2),
 	case lists:all(
-		fun(#{connected := Connected, authenticated := Authd}) ->
-			Connected andalso Authd
+		fun(#{connected := Connected}) ->
+			Connected
 		end,
 		Answer
 	) of

@@ -36,8 +36,7 @@
 	sync = 1,
 	reconnect_after = ?RECONNECT_AFTER,
 	buffer = <<>>,
-	timer_id = 1,
-	auth = false
+	timer_id = 1
 }).
 
 %%%===================================================================
@@ -83,10 +82,9 @@ init(Args) ->
 	self() ! {reconnect, 1},
 	{ok, #state{addr = Addr, port = Port, username = Username, password = Password, timer_id = 1}}.
 
-handle_call(state, _From, #state{sock = Sock, auth = Auth, reason = Reason} = State) ->
+handle_call(state, _From, #state{sock = Sock, reason = Reason} = State) ->
 	Answer = #{
 		connected => Sock =/= undefined,
-		authenticated => Auth,
 		last_error => Reason
 	},
 	{reply, Answer, State};
@@ -94,8 +92,6 @@ handle_call(state, _From, #state{sock = Sock, auth = Auth, reason = Reason} = St
 handle_call({request, _, _}, _From, #state{sock = undefined} = State) ->
 	{reply, {error, not_connected}, State};
 
-handle_call({request, _, _}, _From, #state{auth = false} = State) ->
-	{reply, {error, not_authorized}, State};
 
 handle_call({request, RequestType, Body}, From, #state{sock = Socket} = State) ->
 	#state{sync = Sync} = State2 = next(State),
@@ -229,7 +225,7 @@ auth(#state{sock = Socket, salt = Salt, username = UserName, password = Password
 			case tara_prot:unpack(Response) of
 				{Sync, <<>>, #tara_response{}} ->
 					inet:setopts(Socket, [{active, once}]),
-					State2#state{auth = true, reason = logged_on};
+					State2#state{reason = logged_on};
 				{Sync, <<>>, #tara_error{message = Message}} ->
 					next_reconnect(State2, {auth, Message});
 				Else -> next_reconnect(State2, {auth, Else})
@@ -276,7 +272,6 @@ next_reconnect(#state{sock = Sock, timer_id = OldTimerID, reconnect_after = Reco
 		reason = Reason,
 		greeting = undefined,
 		salt = undefined,
-		auth = false,
 		reconnect_after = min(?MAX_RECONNECT_AFTER, ReconnectAfter + ?RECONNECT_AFTER),
 		buffer = <<>>,
 		timer_id = TimerID
