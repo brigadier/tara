@@ -130,7 +130,7 @@ test_async(_Config) ->
 	Tuple2 = [444, <<"a">>, 1, <<"b">>, 1.1],
 	ok = tara:async_insert(pool2, 512, Tuple2, undefined, 123),
 	receive
-		_ -> exit(unexpected_response)
+		R -> exit({unexpected_response, R})
 	after 1000 -> ok
 	end,
 
