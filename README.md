@@ -63,7 +63,7 @@ in docs and everywhere) of the result.
  - `#tara_error{}` - tarantool error. Something went wrong - invalid parameters in request, attempt to
 insert the tuple which is already exists and anything like that. The error message in the `message` field.
 * The `select` operation accepts optional `Options` parameter, with `limit`, `index`, `offset`, `iterator` 
-integer fields. The `Options` can be either map or proplist. By default `limit` is equal to `16#FFFF` so
+integer fields. The `Options` can be either map or proplist. By default `limit` is equal to `1000` so
 specify some smaller value if your table potentially can have many records matching the query, and use
 pagination.
 * Response data can be different for the `vinyl` backend.
