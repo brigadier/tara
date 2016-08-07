@@ -1,0 +1,11 @@
+IsRebar3 = erlang:function_exported(rebar3, main, 1),
+Rebar2Deps = [
+       {simplepool, ".*", {git, "https://github.com/brigadier/simplepool.git", {branch, "master"}}},
+       {msgpack, ".*", {git, "https://github.com/msgpack/msgpack-erlang.git", {branch, "master"}}}
+       ],
+case IsRebar3 of
+    true ->
+        CONFIG;
+    false ->
+        lists:keyreplace(deps, 1, CONFIG, {deps, Rebar2Deps})
+end.
