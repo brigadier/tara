@@ -26,7 +26,7 @@ suite() ->
 
 all() -> [
 	{group, test}
-%%	 {group, load}
+	 , {group, load}
 ].
 
 testct(_Config) ->
@@ -189,7 +189,7 @@ test_sync(_Config) ->
 
 test_call_noreply(_Config) ->
 	waitconnect(pool2),
-	{_, Workers} = simplepool:pool(pool2),
+	{_, Workers, undefined} = simplepool:pool(pool2),
 
 	%%ensure same worker, slow function is called first, fast one is next. Response should be first fast, next slow
 	%%as the worker process is not blocked, only caller is blocked ({noreply, State} response for gen_server:call)

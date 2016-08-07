@@ -7,7 +7,7 @@
 -include("../include/tara_prot.hrl").
 -include("tara.hrl").
 %% API
--export([start_link/2, simplepool_start_link/3, start_link/1]).
+-export([start_link/2, simplepool_start_link/4, start_link/1]).
 %% gen_server callbacks
 -export([init/1,
 	handle_call/3,
@@ -42,7 +42,7 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
-simplepool_start_link(Visibility, Name, Args) ->
+simplepool_start_link(Visibility, Name, _, Args) ->
 	gen_server:start_link({Visibility, Name}, ?MODULE, Args, []).
 
 start_link(Name, Args) ->

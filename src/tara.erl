@@ -20,7 +20,7 @@ start_pool(Name, PoolArgs, TarantoolArgs) ->
 start_pool(Visibility, Name, PoolArgs, TarantoolArgs) ->
 	Size = tara_util:option(size, PoolArgs, 10),
 	SupFlags = tara_util:option(sup_flags, PoolArgs, {one_for_one, 1, 5}),
-	simplepool:start_pool(Visibility, Name, Size, tara_worker, TarantoolArgs, SupFlags).
+	simplepool:start_pool(Visibility, Name, Size, tara_worker, TarantoolArgs, SupFlags, undefined).
 
 
 
@@ -33,7 +33,7 @@ state({proc, Worker}) ->
 	tara_worker:state(Worker);
 
 state(Pool) ->
-	{_, Workers} = simplepool:pool(Pool),
+	{_, Workers, _} = simplepool:pool(Pool),
 	[tara_worker:state(Worker) || Worker <- tuple_to_list(Workers)].
 
 
