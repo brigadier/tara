@@ -20,7 +20,7 @@ will be handled correctly - the fast one will not wait for the slow one. But 5 s
 still exists, so think about async requests for potentially slow operations. 
 * Can use unix domain sockets, if tarantool configured to listen on such socket. Use 
 `{local, "/tmp/sock"}` as addr and `0` as port.
-* select, delete, insert, call, update, upsert, replace, eval operations.
+* select, delete, insert, call (both old 0x06 and new 0x0A), update, upsert, replace, eval operations.
 
 
 
@@ -28,7 +28,10 @@ still exists, so think about async requests for potentially slow operations.
 #### Note:
 * Uses [Simplepool](https://github.com/brigadier/simplepool) pools. You might not like it as
 `simplepool` uses quite unconventional thing - it compiles pool proc names and other data in a RAM beam module.
-
+* If you have tarantool 1.7.2 or newer define the `TARANTOOL_V172CALL` macro (by default it is already defined
+in rebar.config). This macro would enable the new `call` method (0x0A) which won't convert result values to array.
+For earlier versions of tarantool undefine this macro. Look up the tests for difference in return value of the
+new and old call methods.
 
 Build
 -----

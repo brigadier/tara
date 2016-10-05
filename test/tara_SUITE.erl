@@ -13,7 +13,8 @@ groups() -> [
 		test_sync,
 		test_start,
 		test_call_noreply,
-		test_async
+		test_async,
+		test_call
 	]},
 	{load, [], [
 		load999,
@@ -26,7 +27,7 @@ suite() ->
 
 all() -> [
 	{group, test}
-	 , {group, load}
+%%	 , {group, load}
 ].
 
 testct(_Config) ->
@@ -177,14 +178,27 @@ test_sync(_Config) ->
 	#tara_response{data = [{?IPROTO_DATA, []}]} = tara:upsert(pool2, 512, [111, <<"b">>, 1000], [?OP_ADD(2, 11)]),
 	#tara_response{data = [{?IPROTO_DATA, [[111, <<"b">>, 1000]]}]} = tara:select(pool2, 512, [111, <<"b">>]),
 
-	#tara_response{data = [{?IPROTO_DATA, [[6]]}]} = tara:call(pool2, <<"testfunc">>, [1,2,3]),
-	#tara_response{data = [{?IPROTO_DATA, [[6]]}]} = tara:call(pool2, <<"testfunc">>, [1,2,3,4,5,6,7,8,9,0]),
-	#tara_error{} = tara:call(pool2, <<"testfunc1">>, [1,2,3]),
-	#tara_error{} = tara:call(pool2, <<"testfunc">>, [1,2]),
-
-
 
 	ok.
+
+
+-ifdef(TARANTOOL_V172CALL).
+-define(CALLRESULT(X), X).
+-define(CALLMSG, "== call 0x10 for tarantool >= 1.7.2 ==").
+-else.
+-define(CALLRESULT(X), [X]).
+-define(CALLMSG, "== call 0x06 for tarantool < 1.7.2 ==").
+-endif.
+
+test_call(_Config) ->
+	?debugMsg(?CALLMSG),
+	waitconnect(pool2),
+	#tara_response{data = [{?IPROTO_DATA, [?CALLRESULT(6)]}]} = tara:call(pool2, <<"testfunc">>, [1,2,3]),
+	#tara_response{data = [{?IPROTO_DATA, [?CALLRESULT(6)]}]} = tara:call(pool2, <<"testfunc">>, [1,2,3,4,5,6,7,8,9,0]),
+	#tara_error{} = tara:call(pool2, <<"testfunc1">>, [1,2,3]),
+	#tara_error{} = tara:call(pool2, <<"testfunc">>, [1,2]),
+	ok.
+
 
 
 test_call_noreply(_Config) ->
@@ -197,13 +211,13 @@ test_call_noreply(_Config) ->
 	process_flag(trap_exit, true),
 	Pid1 = spawn_link(
 		fun() ->
-			#tara_response{data = [{?IPROTO_DATA, [[12]]}]} = tara:call({proc, Worker}, <<"slowfunc">>, [1,2,3])
+			#tara_response{data = [{?IPROTO_DATA, [?CALLRESULT(12)]}]} = tara:call({proc, Worker}, <<"slowfunc">>, [1, 2, 3])
 		end
 	),
 
 	Pid2 = spawn_link(
 		fun() ->
-			#tara_response{data = [{?IPROTO_DATA, [[6]]}]} = tara:call({proc, Worker}, <<"testfunc">>, [1, 2, 3])
+			#tara_response{data = [{?IPROTO_DATA, [?CALLRESULT(6)]}]} = tara:call({proc, Worker}, <<"testfunc">>, [1, 2, 3])
 		end
 	),
 
@@ -211,7 +225,6 @@ test_call_noreply(_Config) ->
 		{'EXIT', Pid2, normal} ->
 			receive
 				{'EXIT', Pid1, normal} ->
-
 					ok;
 				X ->
 					exit(X)

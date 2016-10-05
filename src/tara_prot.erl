@@ -4,7 +4,9 @@
 -include("tara.hrl").
 -define(TARA_LIMIT, 1000).
 %% API
--export([request_auth/3, unpack/1, header/3, request_select/3, request_insert_replace/2, request_update/4, request_delete/3, request_call/2, request_eval/2, request_upsert/3]).
+-export([request_auth/3, unpack/1, header/3, request_select/3,
+		 request_insert_replace/2, request_update/4, request_delete/3, request_call/2, request_eval/2,
+		 request_upsert/3]).
 
 -define(MPACKOPTS, [{spec, old}, {map_format, jsx}]).
 -define(CHAP, <<"chap-sha1">>).

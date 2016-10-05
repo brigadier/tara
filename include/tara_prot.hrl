@@ -1,3 +1,4 @@
+
 -define(IPROTO_CODE, 16#00).
 -define(IPROTO_SYNC, 16#01).
 %%  replication keys (header)
@@ -36,7 +37,16 @@
 -define(REQUEST_TYPE_REPLACE, 3).
 -define(REQUEST_TYPE_UPDATE, 4).
 -define(REQUEST_TYPE_DELETE, 5).
--define(REQUEST_TYPE_CALL, 6).
+
+-define(REQUEST_TYPE_CALL_NEW, 16#0A).
+-define(REQUEST_TYPE_CALL_OLD, 6).
+
+-ifdef(TARANTOOL_V172CALL).
+-define(REQUEST_TYPE_CALL, ?REQUEST_TYPE_CALL_NEW).
+-else.
+-define(REQUEST_TYPE_CALL, ?REQUEST_TYPE_CALL_OLD).
+-endif.
+
 -define(REQUEST_TYPE_AUTHENTICATE, 7).
 -define(REQUEST_TYPE_EVAL, 8).
 -define(REQUEST_TYPE_UPSERT, 9).

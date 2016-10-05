@@ -5,9 +5,13 @@
 %% API
 -export([start/0]).
 -export([select/4, select/3, insert/3, replace/3, update/4, update/5, delete/4, delete/3, call/3, eval/3, upsert/4]).
--export([async_select/5, async_select/6, async_insert/5, async_replace/5, async_delete/5, async_delete/6, async_update/6, async_update/7, async_upsert/6, async_call/5, async_eval/5]).
+-export([async_select/5, async_select/6, async_insert/5, async_replace/5,
+		 async_delete/5, async_delete/6, async_update/6, async_update/7, async_upsert/6, async_call/5, async_eval/5]).
 -export([get/3, get/4, state/1]).
 -export([stop_pool/1, start_pool/3, start_pool/4]).
+
+%%-export([call2/3, async_call2/5]).
+
 -type server_ref() :: atom() | {atom() | node()} | {global, atom()} | {via, atom(), term()}.
 
 start() ->
@@ -112,6 +116,7 @@ eval(Pool, Expr, Args) when is_binary(Expr), is_list(Args) ->
 	Body = tara_prot:request_eval(Expr, Args),
 	sync_request(maybe_worker(Pool), ?REQUEST_TYPE_EVAL, Body).
 
+
 %%====================================================================
 %% Async
 %%====================================================================
@@ -175,6 +180,7 @@ async_call(Pool, Function, Args, ReplyTo, Tag) when is_binary(Function), is_list
 async_eval(Pool, Expr, Args, ReplyTo, Tag) when is_binary(Expr), is_list(Args) ->
 	Body = tara_prot:request_eval(Expr, Args),
 	async_request(maybe_worker(Pool), ?REQUEST_TYPE_EVAL, Body, ReplyTo, Tag).
+
 
 
 %%====================================================================
