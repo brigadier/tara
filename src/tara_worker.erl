@@ -115,6 +115,9 @@ handle_call({request, RequestType, Body}, From, #state{sock = Socket} = State) -
 handle_call(_Request, _From, State) ->
 	{reply, ok, State}.
 
+handle_cast({request, _RequestType, _Body, ReplyTo, Tag}, #state{sock = undefined} = State) ->
+	reply({async, ReplyTo, Tag}, {error, not_connected}),
+	{noreply, State};
 
 handle_cast({request, RequestType, Body, ReplyTo, Tag}, #state{sock = Socket} = State) ->
 	#state{sync = Sync} = State2 = next(State),
