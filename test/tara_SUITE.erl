@@ -396,7 +396,7 @@ maybe_start(DataDir, Listen, Terminal, Tarantool) ->
 			ScriptLua = filename:join(DataDir, "script.lua"),
 			{ok, Data} = file:read_file(ScriptLua),
 			file:write_file(ScriptLua, io_lib:format(Data, [Listen, Pid, WorkDir])),
-			os:cmd(Terminal ++ " -e '" ++ Tarantool ++ " " ++ ScriptLua ++ "'");
+			os:cmd(Terminal ++ " -e '" ++ Tarantool ++ " " ++ ScriptLua ++ "' &");
 		true -> ok
 	end.
 
