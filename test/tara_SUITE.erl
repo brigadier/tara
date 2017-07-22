@@ -9,8 +9,9 @@
 
 groups() -> [
 	{test, [], [
-		testct,
 		test_sync,
+		test32,
+		testct,
 		test_start,
 		test_call_noreply,
 		test_async,
@@ -137,10 +138,16 @@ test_async(_Config) ->
 
 	ok.
 
+
+test32(_Config) ->
+	waitconnect(pool2),
+	?assertNotMatch( #tara_response{data = error}, tara:call(pool2, <<"get_s">>, [])),
+	ok.
+
 test_sync(_Config) ->
 	waitconnect(pool2),
 	Tuple1 = [100, <<"a">>, 1, <<"b">>, 1.1],
-	#tara_response{data = [{?IPROTO_DATA, [Tuple1]}]} = tara:insert(pool2, 512, Tuple1),
+	#tara_response{data = [{?IPROTO_DATA, [Tuple1]}]} =  tara:insert(pool2, 512, Tuple1),
 	#tara_response{data = [{?IPROTO_DATA, [Tuple1]}]} = tara:select(pool2, 512, [100]),
 
 	{ok, Tuple1} = tara:get(pool2, 512, [100]),

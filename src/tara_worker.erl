@@ -195,7 +195,8 @@ code_change(_OldVsn, State, _Extra) ->
 
 fold_unpack(#state{buffer = Buffer} = State) ->
 	case tara_prot:unpack(Buffer) of
-		incomplete -> {ok, State};
+		incomplete ->
+			{ok, State};
 		trash -> trash;
 		{Sync, Tail, Msg} ->
 			Key = {tara, Sync},

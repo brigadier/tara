@@ -8,7 +8,8 @@
 		 request_insert_replace/2, request_update/4, request_delete/3, request_call/2, request_eval/2,
 		 request_upsert/3]).
 
--define(MPACKOPTS, [{spec, old}, {map_format, jsx}]).
+-define(MPACKOPTS, [{spec, old}, {map_format, jsx}, {unpack_str, as_binary}]).
+-define(MPACKOPTS_BODY, [{map_format, jsx}, {unpack_str, as_binary}]).
 -define(CHAP, <<"chap-sha1">>).
 
 unpack(<<TotalSZ:5/binary, Rest/binary>> = _Data) ->
@@ -16,7 +17,9 @@ unpack(<<TotalSZ:5/binary, Rest/binary>> = _Data) ->
 		{ok, N} when is_integer(N), N =< byte_size(Rest) ->
 			case msgpack:unpack_stream(Rest, ?MPACKOPTS) of
 				{[{?IPROTO_CODE, Code}, {?IPROTO_SYNC, Sync}, {?IPROTO_SCHEMA_ID, SchemaID}] = _Head, BinBody} ->
-					case msgpack:unpack_stream(BinBody, ?MPACKOPTS) of
+					case msgpack:unpack_stream(BinBody, ?MPACKOPTS_BODY) of
+						{error, incomplete} ->
+							incomplete;
 						{Body, Tail} ->
 							{Sync, Tail, prettify(Code, SchemaID, Body)};
 						_ ->
